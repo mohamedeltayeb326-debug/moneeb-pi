@@ -63,6 +63,21 @@
     const Pi = window.Pi;
     Pi.init({ version: "2.0", sandbox: true });
 
+    async function callBackend(action, paymentId, txid = null) {
+      const response = await fetch('/api/payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, paymentId, txid })
+      });
+      return response.json();
+    }
+
+    function onIncompletePaymentFound(payment) {
+      if (payment.transaction && payment.transaction.txid) {
+        callBackend('complete', payment.identifier, payment.transaction.txid);
+      }
+    }
+
     async function auth() {
       try {
         const scopes = ['username', 'payments'];
@@ -73,20 +88,25 @@
       }
     }
 
-    function onIncompletePaymentFound(payment) {
-      console.log("Incomplete payment:", payment);
-    }
-
     function testPayment() {
       Pi.createPayment({
         amount: 1,
         memo: "اختبار منصة MONEEB GLOBAL",
         metadata: { orderId: "test_001" }
       }, {
-        onReadyForServerApproval: function(paymentId) { console.log("Ready:", paymentId); },
-        onReadyForServerCompletion: function(paymentId, txid) { alert("تمت العملية بنجاح!"); },
-        onCancel: function(paymentId) { alert("تم إلغاء العملية"); },
-        onError: function(error, payment) { alert("خطأ: " + error.message); }
+        onReadyForServerApproval: async function(paymentId) {
+          await callBackend('approve', paymentId);
+        },
+        onReadyForServerCompletion: async function(paymentId, txid) {
+          await callBackend('complete', paymentId, txid);
+          alert("تمت عملية الدفع بنجاح واكتملت على الشبكة!");
+        },
+        onCancel: function(paymentId) {
+          alert("تم إلغاء العملية");
+        },
+        onError: function(error, payment) {
+          alert("خطأ: " + error.message);
+        }
       });
     }
 
