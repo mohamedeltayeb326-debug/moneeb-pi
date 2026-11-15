@@ -3,61 +3,207 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MONEEB GLOBAL | منصة منيب للتجارة والاستثمار</title>
+  <title>MONEEB CROPS | منصة منيب للمحاصيل الزراعية والتجارة</title>
   <script src="https://sdk.minepi.com/pi-sdk.js"></script>
   <style>
+    :root {
+      --bg-dark: #0f172a;
+      --card-bg: #1e293b;
+      --border: #334155;
+      --gold: #f59e0b;
+      --gold-hover: #d97706;
+      --green: #10b981;
+      --text-light: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-blue: #38bdf8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: system-ui, -apple-system, sans-serif;
-      background: #0f172a;
-      color: #f8fafc;
+      font-family: system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-light);
+      line-height: 1.6;
+    }
+    header {
+      background: rgba(30, 41, 59, 0.95);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .brand { font-size: 1.25rem; font-weight: 800; color: var(--gold); }
+    .brand span { color: var(--green); }
+    .user-badge {
+      background: var(--bg-dark);
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      color: var(--accent-blue);
+    }
+    .hero {
       text-align: center;
+      padding: 36px 20px 24px;
+      max-width: 740px;
+      margin: 0 auto;
+    }
+    .hero h1 { font-size: 1.8rem; color: var(--gold); margin-bottom: 10px; }
+    .hero p { color: var(--text-muted); font-size: 0.98rem; }
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 10px 20px 50px;
+    }
+    .section-title {
+      font-size: 1.2rem;
+      margin-bottom: 18px;
+      padding-right: 10px;
+      border-right: 4px solid var(--green);
+      color: var(--text-light);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+      margin-bottom: 36px;
     }
     .card {
-      background: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 16px;
-      padding: 32px;
-      max-width: 420px;
-      width: 100%;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
-    h1 { color: #f59e0b; margin-bottom: 8px; font-size: 1.6rem; }
-    p { color: #cbd5e1; line-height: 1.6; margin-bottom: 24px; }
-    .status {
-      background: #0f172a;
-      padding: 12px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      font-size: 0.95rem;
-      color: #38bdf8;
+    .tag {
+      display: inline-block;
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--green);
+      font-size: 0.78rem;
+      padding: 3px 10px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      width: fit-content;
     }
+    .card h3 { font-size: 1.12rem; margin-bottom: 8px; }
+    .card p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 18px; }
+    .price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .price { font-weight: 700; font-size: 1.1rem; color: var(--gold); }
     button {
-      background: #f59e0b;
-      color: #0f172a;
+      background: var(--gold);
+      color: var(--bg-dark);
       border: none;
-      padding: 12px 24px;
+      padding: 11px 18px;
       border-radius: 8px;
-      font-weight: bold;
-      font-size: 1rem;
+      font-weight: 700;
+      font-size: 0.95rem;
       cursor: pointer;
       width: 100%;
     }
-    button:hover { background: #d97706; }
+    button:hover { background: var(--gold-hover); }
+    footer {
+      text-align: center;
+      padding: 24px 20px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>MONEEB GLOBAL</h1>
-    <p>منصة منيب للتجارة والاستثمار والحلول الرقمية</p>
-    <div class="status" id="user-status">جاري الاتصال بشبكة Pi...</div>
-    <button onclick="testPayment()">تجربة الدفع (1 Test-Pi)</button>
-  </div>
+
+  <header>
+    <div class="brand">MONEEB <span>CROPS</span></div>
+    <div class="user-badge" id="user-status">جاري الاتصال بشبكة Pi...</div>
+  </header>
+
+  <section class="hero">
+    <h1>منصة منيب للمحاصيل الزراعية والتجارة الدولية</h1>
+    <p>سوق رقمي لربط المزارعين والموردين بتجار الجملة والمصدرين عبر مدفوعات شبكة Pi Network.</p>
+  </section>
+
+  <main class="container">
+    <h2 class="section-title">عروض المحاصيل وخدمات التوريد</h2>
+    <div class="grid">
+      <div class="card">
+        <div>
+          <span class="tag">محاصيل نقدية</span>
+          <h3>سمسم أبيض وأحمر (توريد جملة)</h3>
+          <p>حجز كميات وتنسيق عقود توريد السمسم المنقى عالي الجودة للتصدير والأسواق الإقليمية.</p>
+        </div>
+        <div>
+          <div class="price-row">
+            <span>رسوم حجز العينة / الطلب</span>
+            <span class="price">5 Pi</span>
+          </div>
+          <button onclick="payForService(5, 'حجز توريد سمسم - MONEEB CROPS', 'crop_sesame')">طلب ودفع عبر Pi</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div>
+          <span class="tag">صمغ ومنتجات غابية</span>
+          <h3>صمغ عربي (هشاب وطلح)</h3>
+          <p>توفير وربط مباشر مع موردي الصمغ العربي الخام والمفرز بمواصفات التصدير المعتمدة.</p>
+        </div>
+        <div>
+          <div class="price-row">
+            <span>رسوم حجز العينة / الطلب</span>
+            <span class="price">5 Pi</span>
+          </div>
+          <button onclick="payForService(5, 'حجز توريد صمغ عربي - MONEEB CROPS', 'crop_gum')">طلب ودفع عبر Pi</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div>
+          <span class="tag">بقوليات وحبوب</span>
+          <h3>فول سوداني وكركديه مجفف</h3>
+          <p>عروض موسمية مباشرة من مناطق الإنتاج مع خدمات الفرز والتعبئة والشحن.</p>
+        </div>
+        <div>
+          <div class="price-row">
+            <span>رسوم حجز العينة / الطلب</span>
+            <span class="price">3 Pi</span>
+          </div>
+          <button onclick="payForService(3, 'حجز فول سوداني وكركديه - MONEEB CROPS', 'crop_hibiscus')">طلب ودفع عبر Pi</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div>
+          <span class="tag">إدراج موردين</span>
+          <h3>إدراج عرض محصول في المنصة</h3>
+          <p>للمزارعين والتجار: اعرض محصولك وكمياتك المتاحة أمام شبكة المشترين الدوليين.</p>
+        </div>
+        <div>
+          <div class="price-row">
+            <span>رسوم الإدراج الشهري</span>
+            <span class="price">2 Pi</span>
+          </div>
+          <button onclick="payForService(2, 'إدراج عرض محصول زراعي', 'list_crop')">تفعيل الإدراج عبر Pi</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2026 MONEEB GLOBAL — قطاع المحاصيل الزراعية والتجارة | مدعوم بشبكة Pi Network
+  </footer>
 
   <script>
     const Pi = window.Pi;
@@ -84,28 +230,28 @@
         const authResult = await Pi.authenticate(scopes, onIncompletePaymentFound);
         document.getElementById('user-status').innerText = "مرحباً بك: @" + authResult.user.username;
       } catch (err) {
-        document.getElementById('user-status').innerText = "يرجى فتح المنصة داخل متصفح Pi Browser";
+        document.getElementById('user-status').innerText = "يرجى الفتح داخل Pi Browser";
       }
     }
 
-    function testPayment() {
+    function payForService(amount, memo, itemId) {
       Pi.createPayment({
-        amount: 1,
-        memo: "اختبار منصة MONEEB GLOBAL",
-        metadata: { orderId: "test_001" }
+        amount: amount,
+        memo: memo,
+        metadata: { itemId: itemId }
       }, {
         onReadyForServerApproval: async function(paymentId) {
           await callBackend('approve', paymentId);
         },
         onReadyForServerCompletion: async function(paymentId, txid) {
           await callBackend('complete', paymentId, txid);
-          alert("تمت عملية الدفع بنجاح واكتملت على الشبكة!");
+          alert("تم استلام طلبك بنجاح: " + memo);
         },
         onCancel: function(paymentId) {
           alert("تم إلغاء العملية");
         },
         onError: function(error, payment) {
-          alert("خطأ: " + error.message);
+          alert("خطأ في الدفع: " + error.message);
         }
       });
     }
